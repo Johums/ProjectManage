@@ -1,0 +1,38 @@
+<!DOCTYPE HTML>
+<HTML lang="zh-CN" xmlns="http://www.w3.org/1999/html">
+<HEAD>
+    <META content="IE=11.0000"
+          http-equiv="X-UA-Compatible">
+
+    <META charset="utf-8">
+    <TITLE>{% block title %}{% endblock %}</TITLE>
+    <LINK href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <LINK href="/static/css/dashboard.css" rel="stylesheet">
+
+    <style type="text/css">
+        .container{
+            width: 300px;
+        }
+    </style>
+</HEAD>
+<body>
+
+<div class="container">
+
+    <form class="form-signin" action="{% url 'login' %}" method="post">
+        {% csrf_token %}
+        <h2 class="form-signin-heading">登   录</h2>
+        <input type="text" name="username" class="form-control" placeholder="账  号" required="" autofocus="">
+        <br>
+        <input type="password" name="password" class="form-control" placeholder="密  码" required="">
+
+        <br>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+        <br>
+        <span style="color: red;">{{ login_error }}</span>
+    </form>
+
+</div>
+
+</body>
+</html>

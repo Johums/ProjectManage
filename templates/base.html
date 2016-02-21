@@ -1,0 +1,93 @@
+﻿<!DOCTYPE HTML>
+<HTML lang="zh-CN" xmlns="http://www.w3.org/1999/html">
+<HEAD>
+    <META content="IE=11.0000"
+          http-equiv="X-UA-Compatible">
+
+    <META charset="utf-8">
+    <TITLE>{% block title %}{% endblock %}</TITLE>
+    <!-- Bootstrap core CSS -->
+    <LINK href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <LINK href="/static/css/dashboard.css" rel="stylesheet">
+
+    <LINK href="/static/css/custom.css" rel="stylesheet">
+</HEAD>
+
+<BODY>
+
+{% block body %}
+
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/">Project Manage</a>
+            </div>
+            <div class="navbar-collapse collapse" id="navbar">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        {% if request.user.is_authenticated %}
+                        <li class="dropdown">
+                          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ request.user.userinfo }} <span class="caret"></span></a>
+                          <ul class="dropdown-menu">
+                            <li><a href="{% url 'logout' %}">注销</a></li>
+                          </ul>
+                        </li>
+                        {% else %}
+                            <a href="{% url 'login' %}">登录</a>
+                        {% endif %}
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-2 sidebar" id="left_menu">
+                {% block left_sidebar %}
+                    {% load custom %}
+                    {{ menu | multi_menu }}
+                {% endblock %}
+                <ul class="nav nav-pills nav-stacked" style="margin-left: 0px">
+                    <li data-toggle="collapse" data-target=".demo">
+                        <a href="{% url 'chat' %}">
+                            <small>聊天</small>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-10 col-md-offset-2 main">
+                {% block right_content %}
+
+                {% endblock %}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+<!-- Bootstrap core JavaScript
+    ================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<SCRIPT src="/static/js/jquery.min.js"></SCRIPT>
+
+<SCRIPT src="/static/js/bootstrap.min.js"></SCRIPT>
+
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<SCRIPT src="/static/js/ie10-viewport-bug-workaround.js"></SCRIPT>
+
+{% block script %}
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $("#left_menu a[href='{{ request.path }}']").parent().addClass("active");
+        });
+
+    </script>
+{% endblock %}
+</BODY>
+</HTML>

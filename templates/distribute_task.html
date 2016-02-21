@@ -1,0 +1,87 @@
+﻿{% extends "index.html" %}
+
+{% block right_content %}
+    <form class="form-horizontal" action="{% url "distribute_task" %}" method="get">
+        {% csrf_token %}
+        <div class="form-group">
+            <div class="col-md-5">
+                <label class="col-md-6 control-label">系统名称：</label>
+
+                <div class="col-md-6">
+                    <input type="text" class="form-control" name="system_name" value="{{ request.GET.system_name }}">
+                </div>
+            </div>
+
+            <div class="col-md-5">
+                <label class="col-md-6 control-label">需求名称：</label>
+
+                <div class="col-md-6">
+                    <input type="text" class="form-control" name="req_name" value="{{ request.GET.req_name }}">
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-5">
+                <label class="col-md-6 control-label">指派人：</label>
+
+                <div class="col-md-6">
+                    <input type="text" class="form-control" name="last_user" value="{{ request.GET.last_user }}">
+                </div>
+            </div>
+        </div>
+        <br>
+
+        <div class="form-group">
+            <div class="col-md-2">
+            </div>
+            <div class="col-md-4">
+                <button type="submit" class="btn btn-primary col-md-6 col-md-offset-2"
+                        style="align-content: center">分配
+                </button>
+            </div>
+            <div class="col-md-4">
+                <button type="submit" class="btn btn-primary col-md-6 col-md-offset-2"
+                        style="align-content: center">查询
+                </button>
+            </div>
+            <div class="col-md-2">
+            </div>
+        </div>
+    </form>
+
+    <br>
+
+    <div class="col-md-10 col-lg-offset-1">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th class="col-md-1">序号</th>
+                <th class="col-md-1">任务类型</th>
+                <th class="col-md-1">需求编号</th>
+                <th class="col-md-1">需求名称</th>
+                <th class="col-md-1">指派人</th>
+                <th class="col-md-1">受理人</th>
+                <th class="col-md-1">任务状态</th>
+                <th class="col-md-1">任务内容</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            {% for work_item in work_items %}
+            <tr>
+                <td><small>{# {{ forloop.counter }} #} <a href="{% url 'task_details' work_item.id %}">{{ work_item.id }}</a></small></td>
+                <td><small>{{ work_item.flow.get_task_tp_display }}</small></td>
+                <td><small>{{ work_item.flow.req_no }}</small></td>
+                <td><small>{{ work_item.flow.req_name }}</small></td>
+                <td><small>{{ work_item.last_user }}</small></td>
+                <td><small>{{ work_item.curr_user }}</small></td>
+                <td><small>{{ work_item.get_work_item_state_display }}</small></td>
+                <td><small>{{ work_item.work_item_context }}</small></td>
+            </tr>
+            {% endfor %}
+            </tbody>
+
+        </table>
+    </div>
+{% endblock %}

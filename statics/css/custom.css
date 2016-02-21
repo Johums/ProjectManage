@@ -1,0 +1,48 @@
+
+.chat-box{
+    height: 500px;
+    border: 1px solid greenyellow;
+}
+
+.contact-list {
+    height: 100%;
+    border: 1px solid crimson;
+}
+
+.dialog-box {
+    height: 100%;
+    border: 1px solid purple;
+    margin-bottom: 0px;
+}
+
+.contact-list-head{
+    margin-bottom: 30px;
+    margin-top: 30px;
+}
+
+.dialog-box-head{
+    height: 10%;
+    background-color: #afd9ee;
+}
+
+.dialog-box-content{
+    height: 70%;
+    background-color: lightpink;
+    overflow: scroll;
+    overflow: auto;
+}
+
+.dialog-box-utils{
+    height: 5%;
+    background-color: lightgray;
+}
+
+.dialog-box-sendmsg textarea{
+    height: 15%;
+    width: 100%;
+    resize: none;
+    border: none;
+}
+
+
+

@@ -1,0 +1,185 @@
+﻿{% extends "index.html" %}
+
+{% block right_content %}
+    <form class="form-horizontal" action="{% url "create_task" %}" method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <div class="col-md-5">
+                <label class="col-md-6 control-label">系统名称：</label>
+
+                <div class="col-md-6">
+                    <select class="form-control" name="system_name">
+                        {% for system_info in system_infos %}
+                            <option value="{{ system_info.id }}">{{ system_info.system_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-5">
+                <label class="col-md-6 control-label">任务类型：</label>
+
+                <div class="col-md-6">
+                    <select class="form-control" name="task_tp">
+                        <option value="0">需求</option>
+                        <option value="1">临时配合</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-5">
+                <label for="inputEmail3" class="col-md-6 control-label">需求名称：</label>
+
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" name="req_name">
+                </div>
+            </div>
+
+            <div class="col-md-5">
+                <label class="col-md-6 control-label">需求编号：</label>
+
+                <div class="col-md-6">
+                    <input type="text" class="form-control" name="req_no">
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-5">
+                <label class="col-md-6 control-label">需求提出人：</label>
+
+                <div class="col-md-6">
+                    <select class="form-control" name="raise_user">
+                        {% for staff in staffs %}
+                            <option value="{{ staff.id }}">{{ staff.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="col-md-5">
+                <label for="inputEmail3" class="col-md-6 control-label">需求上线时间：</label>
+
+                <div class="col-md-6">
+                    <input type="date" class="form-control" id="inputEmail3">
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+
+            <div class="col-md-5">
+                <label for="inputEmail3" class="col-md-6 control-label ">需求内容：</label>
+
+                <div class="col-md-6">
+                    <textarea class="form-control"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <br/>
+
+        <div class="form-group">
+            <div class="col-md-5">
+                <label class="col-md-6 control-label">下一处理人：</label>
+
+                <div class="col-md-6">
+                    <select class="form-control" name="curr_user">
+                        {% for staff in staffs %}
+                            <option value="{{ staff.id }}">{{ staff.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="col-md-5">
+                <label for="inputEmail3" class="col-md-6 control-label">任务状态：</label>
+
+                <div class="col-md-6">
+                    <select class="form-control">
+                        <option>开发中</option>
+                        <option>开发结束</option>
+                        <option>打包中</option>
+                        <option>打包结束</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+
+            <div class="col-md-5">
+                <label for="inputEmail3" class="col-md-6 control-label ">工作内容：</label>
+
+                <div class="col-md-6">
+                    <textarea class="form-control"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-5">
+                <label class="col-md-6 control-label">计划开始时间：</label>
+
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <input type="date" class="form-control" id="inputEmail3">
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-5">
+                <label for="inputEmail3" class="col-md-6 control-label">计划结束时间：</label>
+
+                <div class="col-md-6">
+                    <input type="date" class="form-control" id="inputEmail3">
+                </div>
+            </div>
+        </div>
+        <br>
+
+        <div class="form-group">
+            <div class="col-md-3">
+            </div>
+            <div class="col-md-6">
+                <button type="submit" class="btn btn-primary col-md-6 col-md-offset-2"
+                        style="align-content: center" name="commit">提交
+                </button>
+            </div>
+            <div class="col-md-3">
+            </div>
+        </div>
+    </form>
+{% endblock %}
+
+{% block script %}
+    <script type="text/javascript">
+
+        $(function () {
+            if ($("select[name='task_tp']").find("option:selected").val() == "1") {
+                $("input[name='req_no']").attr("readonly", "readonly");
+            }
+            else {
+                $("input[name='req_no']").attr("readonly", false);
+            }
+        });
+
+        $("select[name='task_tp']").change(function () {
+            if ($("select[name='task_tp']").find("option:selected").val() == "1") {
+                $("input[name='req_no']").attr("readonly", "readonly").val("");
+            }
+            else {
+                $("input[name='req_no']").attr("readonly", false);
+            }
+        });
+
+        $("button[name='commit']").click(function(){
+            alert(231);
+        });
+
+    </script>
+{% endblock %}
