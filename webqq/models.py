@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 from workflow import models as workflow_models
 from django.db import models
 
+
 class QQGroup(models.Model):
     name = models.CharField(max_length=64)
     brief = models.TextField(max_length=1024, default="nothing")
