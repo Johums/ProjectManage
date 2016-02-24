@@ -24,7 +24,8 @@
                         <div class="contact-list-content">
                             <div class="list-group">
                                 {% for contact in request.user.userinfo.friends.select_related %}
-                                    <a href="#" contact-id="{{ contact.id }}" contact-type="single" class="list-group-item">{{ contact.name }}</a>
+                                    <a href="#" contact-id="{{ contact.id }}" contact-type="single"
+                                       class="list-group-item">{{ contact.name }}</a>
                                 {% endfor %}
                             </div>
                         </div>
@@ -32,7 +33,6 @@
                     </div>
                     <div class="col-md-9 dialog-box">
                         <div class="dialog-box-head">
-                            Zhou chating
                         </div>
 
                         <div class="dialog-box-content">
@@ -58,6 +58,13 @@
     <script type="text/javascript">
 
         $(function () {
+
+            RefreshMsgs = setInterval(function(){
+                GetNewMsg();
+            }
+            , 3000);
+
+
             $(".contact-list-content a").click(
                     function () {
                         $(this).addClass("active");
@@ -65,12 +72,13 @@
                         SwitchChatBox(this)
                     }
             );
-         });
+        });
 
-        $("body").delegate("textarea", "keydown", function(e){
-            if(e.which == 13){
+
+        $("body").delegate("textarea", "keydown", function (e) {
+            if (e.which == 13) {
                 var msg_text = $("textarea").val();
-                if($.trim(msg_text).length >0 ){
+                if ($.trim(msg_text).length > 0) {
                     console.log(msg_text);
                     SendMsg(msg_text);
                 }
@@ -80,7 +88,7 @@
             }
         });
 
-        function SwitchChatBox(ele){
+        function SwitchChatBox(ele) {
             var current_uid = $(ele).attr("contact-id");
             var current_dialog_type = $(ele).attr("contact-type");
             var current_contact_name = $(ele).text();
@@ -88,20 +96,28 @@
                     " contact-type='" + current_dialog_type + "'>" + current_contact_name + "</span>";
 
             $(".dialog-box-head").html(dialog_head_html);
-         }
+        }
 
-        function AddSendMsgIntoBox(msg_text){
+        function AddSendMsgIntoBox(msg_text) {
             var msg_div = "<div class='pull right'>" +
-                            "<span>" + "{{ request.user.userinfo }}" + "&nbsp;&nbsp;&nbsp;</span>" +
-                            "<span>" + new Date().toLocaleTimeString() + "</span>" +
-                            "<p>" + msg_text + "</p>"
+                    "<span>" + "{{ request.user.userinfo }}" + "&nbsp;&nbsp;&nbsp;</span>" +
+                    "<span>" + new Date().toLocaleTimeString() + "</span>" +
+                    "<p>" + msg_text + "</p>"
             $(".dialog-box-content").append(msg_div);
             $(".dialog-box-content").animate({
-                        scrollTop: $(".dialog-box-content")[0].scrollHeight}, 500
+                        scrollTop: $(".dialog-box-content")[0].scrollHeight
+                    }, 500
             );
         }
 
-        function SendMsg(msg){
+        function GetNewMsg(){
+            $.get("{% url 'get_new_msg' %}",
+                    {"uid": "{{ request.user.userinfo.id }}"}, function(callback){
+                        console.log(callback)
+                    });
+        }
+
+        function SendMsg(msg) {
             var msg_dic = {
                 "from_id": "{{ request.user.userinfo }}",
                 "to_id": $(".dialog-box-head span").attr("contact-id"),
@@ -109,10 +125,13 @@
                 "msg": msg
             };
 
-            $.post("{% url 'chat_send_msg' %}", {'data': JSON.stringify(msg_dic), "csrfmiddlewaretoken": $("input[name='csrfmiddlewaretoken']").val()}, function(callback){
+            $.post("{% url 'chat_send_msg' %}", {
+                'data': JSON.stringify(msg_dic),
+                "csrfmiddlewaretoken": $("input[name='csrfmiddlewaretoken']").val()
+            }, function (callback) {
                 console.log(callback);
             });
         }
 
-</script>
+    </script>
 {% endblock %}
