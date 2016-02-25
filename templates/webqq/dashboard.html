@@ -22,10 +22,13 @@
                         </div>
 
                         <div class="contact-list-content">
-                            <div class="list-group">
+                            <div id="contact-list" class="list-group">
                                 {% for contact in request.user.userinfo.friends.select_related %}
                                     <a href="#" contact-id="{{ contact.id }}" contact-type="single"
-                                       class="list-group-item">{{ contact.name }}</a>
+                                       class="list-group-item">
+                                        <span style="background-color: orangered" class="badge hide">0</span>
+                                        {{ contact.name }}
+                                    </a>
                                 {% endfor %}
                             </div>
                         </div>
@@ -62,7 +65,7 @@
             RefreshMsgs = setInterval(function(){
                 GetNewMsg();
             }
-            , 3000);
+            , 1000);
 
 
             $(".contact-list-content a").click(
@@ -111,15 +114,36 @@
         }
 
         function GetNewMsg(){
+
+            var current_contact_id = $(".dialog-box-head span").attr("contact-id")
+            var current_contact_name = $(".dialog-box-head span").text()
             $.get("{% url 'get_new_msg' %}",
                     {"uid": "{{ request.user.userinfo.id }}"}, function(callback){
-                        console.log(callback)
-                    });
+                        console.log(callback);
+
+                        callback = JSON.parse(callback);
+
+                        $.each(callback, function(index, msg){
+                            if(msg.from_id == current_contact_id){
+                                var msg_div = "<div class='row'>" +
+                                                "<span>" + current_contact_name + "</span>" +
+                                                "<span>" + msg.date + "</span>" +
+                                                "<p>" + msg.msg + "</p>" +
+                                                "</div>";
+                                $(".dialog-box-content").append(msg_div);
+                            }else{// 发送这条消息的人 对话框未被打开 故仅加消息数
+                                var msg_count_ele = $("#contact-list a[contact-id='" + msg.from_id + "'] span");
+                                msg_count_ele.text(parseInt(msg_count_ele.text()) + 1);
+                                msg_count_ele.removeClass("hide");
+                            }
+
+                        });//end each
+                    });// end get
         }
 
         function SendMsg(msg) {
             var msg_dic = {
-                "from_id": "{{ request.user.userinfo }}",
+                "from_id": "{{ request.user.userinfo.id }}",
                 "to_id": $(".dialog-box-head span").attr("contact-id"),
                 "contact_type": $(".dialog-box-head span").attr("contact-type"),
                 "msg": msg
