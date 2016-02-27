@@ -1,7 +1,8 @@
-﻿{% extends "index.html" %}
+﻿﻿{% extends "index.html" %}
 
 {% block right_content %}
     <div>
+        {% csrf_token %}
         <!-- Nav tabs -->
         <ul class="nav nav-tabs" role="tablist">
             <li role="presentation" class="active"><a href="#contact-box" role="tab" data-toggle="tab">联系人</a>
@@ -34,13 +35,13 @@
                         </div>
 
                     </div>
-                    <div class="col-md-9 dialog-box">
+                    <div class="dialog-box">
                         <div class="dialog-box-head">
                             <span contact-id="-10" contact-type="single">TT</span>
                         </div>
 
                         <div class="dialog-box-content">
-                            {% csrf_token %}
+
                         </div>
                         <div class="dialog-box-utils">
                             tools
@@ -69,10 +70,10 @@
 
         $(function () {
 
-            RefreshMsgs = setInterval(function(){
-                GetNewMsg();
-            }
-            , 1000);
+            RefreshMsgs = setInterval(function () {
+                        GetNewMsg();
+                    }
+                    , 1000);
 
 
             $(".contact-list-content a").click(
@@ -116,16 +117,16 @@
             $(".dialog-box-head").html(dialog_head_html);
         }
 
-        function SessionHandle(contact_id, contact_type, action){
+        function SessionHandle(contact_id, contact_type, action) {
 
-            if(action == "dump"){
+            if (action == "dump") {
                 var current_dialog_content = $(".dialog-box-content").html();
                 all_dialog_session[contact_type][contact_id] = current_dialog_content;
             }//保存当前聊天记录
-            else if (action == "load"){
+            else if (action == "load") {
                 var new_dialog_content = "";
 
-                if(all_dialog_session[contact_type].hasOwnProperty(contact_id)){
+                if (all_dialog_session[contact_type].hasOwnProperty(contact_id)) {
                     new_dialog_content = all_dialog_session[contact_type][contact_id];
                 }
 
@@ -135,10 +136,10 @@
         }
 
         function AddSendMsgIntoBox(msg_text) {
-            var msg_div = "<div class='pull right'>" +
+            var msg_div = "<div style='padding: 20px' class='row'><div class='pull-right'>" +
                     "<span>" + "{{ request.user.userinfo }}" + "&nbsp;&nbsp;&nbsp;</span>" +
                     "<span>" + new Date().toLocaleTimeString() + "</span>" +
-                    "<p>" + msg_text + "</p>"
+                    "<p>" + msg_text + "</p></div></div>";
             $(".dialog-box-content").append(msg_div);
             $(".dialog-box-content").animate({
                         scrollTop: $(".dialog-box-content")[0].scrollHeight
@@ -146,36 +147,36 @@
             );
         }
 
-        function GetNewMsg(){
+        function GetNewMsg() {
 
             var current_contact_id = $(".dialog-box-head span").attr("contact-id")
             var current_contact_name = $(".dialog-box-head span").text()
             $.get("{% url 'get_new_msg' %}",
-                    {"uid": "{{ request.user.userinfo.id }}"}, function(callback){
+                    {"uid": "{{ request.user.userinfo.id }}"}, function (callback) {
                         console.log(callback);
 
                         callback = JSON.parse(callback);
 
-                        $.each(callback, function(index, msg){
-                            if(msg.from_id == current_contact_id){
-                                var msg_div = "<div class='row'>" +
-                                                "<span>" + current_contact_name + "</span>" +
-                                                "<span>" + msg.date + "</span>" +
-                                                "<p>" + msg.msg + "</p>" +
-                                                "</div>";
+                        $.each(callback, function (index, msg) {
+                            if (msg.from_id == current_contact_id) {
+                                var msg_div = "<div style='padding: 20px' class='row'>" +
+                                        "<span>" + current_contact_name + "</span>" +
+                                        "<span>" + msg.date + "</span>" +
+                                        "<p>" + msg.msg + "</p>" +
+                                        "</div>";
                                 $(".dialog-box-content").append(msg_div);
-                            }else{// 发送这条消息的人 对话框未被打开 故仅加消息数
+                            } else {// 发送这条消息的人 对话框未被打开 故仅加消息数
                                 var msg_count_ele = $("#contact-list a[contact-id='" + msg.from_id + "'] span");
                                 msg_count_ele.text(parseInt(msg_count_ele.text()) + 1);
                                 msg_count_ele.removeClass("hide");
 
                                 //同时把这条消息存在全局变量里面
                                 var msg_send_name = $("#contact-list a[contact-id='" + msg.from_id + "'] ").text();
-                                var msg_div = "<div class='row'>" +
-                                            "<span>" + msg_send_name + "</span>" +
-                                            "<span>" + msg.date + "</span>" +
-                                            "<p>" + msg.msg + "</p>" +
-                                            "</div>";
+                                var msg_div = "<div style='padding: 20px' class='row'>" +
+                                        "<span>" + msg_send_name + "</span>" +
+                                        "<span>" + msg.date + "</span>" +
+                                        "<p>" + msg.msg + "</p>" +
+                                        "</div>";
                                 var old_session_content = SessionHandle(msg.from_id, msg.contact_type, "load");
                                 var new_session_content = old_session_content + msg_div;
 
@@ -193,7 +194,7 @@
                 "contact_type": $(".dialog-box-head span").attr("contact-type"),
                 "msg": msg
             };
-            alert($("input[name='csrfmiddlewaretoken']").val());
+
             $.post("{% url 'chat_send_msg' %}", {
                 'data': JSON.stringify(msg_dic),
                 "csrfmiddlewaretoken": $("input[name='csrfmiddlewaretoken']").val()
