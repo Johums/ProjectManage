@@ -35,11 +35,11 @@ def send_msg(request):
 
 def get_msg(request):
     uid = request.GET.get("uid")
-    print uid
     if uid:
         res = list()
         if global_msg_dic.has_key(uid):
             res = global_msg_dic[uid].get_msg()
+        print res
         return HttpResponse(json.dumps(res))
     else:
         return HttpResponse(json.dumps("uid not provided! "))
