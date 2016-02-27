@@ -78,6 +78,8 @@
             $(".contact-list-content a").click(
                     function () {
                         $(this).addClass("active");
+                        $(this).children("span").addClass("hide");
+                        $(this).children("span").text(0);
                         $(this).siblings().removeClass("active");
                         SwitchChatBox(this)
                     }
@@ -166,6 +168,18 @@
                                 var msg_count_ele = $("#contact-list a[contact-id='" + msg.from_id + "'] span");
                                 msg_count_ele.text(parseInt(msg_count_ele.text()) + 1);
                                 msg_count_ele.removeClass("hide");
+
+                                //同时把这条消息存在全局变量里面
+                                var msg_send_name = $("#contact-list a[contact-id='" + msg.from_id + "'] ").text();
+                                var msg_div = "<div class='row'>" +
+                                            "<span>" + msg_send_name + "</span>" +
+                                            "<span>" + msg.date + "</span>" +
+                                            "<p>" + msg.msg + "</p>" +
+                                            "</div>";
+                                var old_session_content = SessionHandle(msg.from_id, msg.contact_type, "load");
+                                var new_session_content = old_session_content + msg_div;
+
+                                all_dialog_session[msg.contact_type][msg.from_id] = new_session_content;
                             }
 
                         });//end each
@@ -179,7 +193,7 @@
                 "contact_type": $(".dialog-box-head span").attr("contact-type"),
                 "msg": msg
             };
-
+            alert($("input[name='csrfmiddlewaretoken']").val());
             $.post("{% url 'chat_send_msg' %}", {
                 'data': JSON.stringify(msg_dic),
                 "csrfmiddlewaretoken": $("input[name='csrfmiddlewaretoken']").val()
